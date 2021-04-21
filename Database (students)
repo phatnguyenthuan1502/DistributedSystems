@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS students;
+
+CREATE TABLE students (
+	Name VARCHAR(30),
+  ID VARCHAR(30) PRIMARY KEY,
+  Year VARCHAR(30)
+);
