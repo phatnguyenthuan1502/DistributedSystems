@@ -29,3 +29,5 @@
 - Servers can use any port, but the client must be able to learn what it is. A list of all the assigned port numbers is maintained by the numbering authority of the Internet.
 ## 1.5 What Is a Socket?
 - A socket is an abstraction through which an application may send and receive data.
+- Different types of sockets correspond to different underlying protocol suites and different stacks of protocols within a suite. The main types of sockets in TCP/IP today are stream sockets (uses TCP) and datagram sockets (uses UDP). 
+- A TCP/IP socket is uniquely identified by an Internet address, an end-to-end protocol (TCP or UDP), and a port number.
