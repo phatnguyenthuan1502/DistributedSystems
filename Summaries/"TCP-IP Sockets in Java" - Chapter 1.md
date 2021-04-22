@@ -10,7 +10,7 @@
 - The Internet Protocol provides a datagram service: every packet is handled and delivered by the network independently. To make this work, each IP packet has to contain the address of its destination.
 - The layer above IP is called the transport layer. It offers a choice between two protocols: TCP and UDP. Each builds on the service provided by IP, but they do so in different ways to provide different kinds of transport, which are used by application protocols with different needs.
 - TCP is designed to detect and recover from the losses, duplications, and other errors. UDP, on the other hand, does not attempt to recover from errors experienced by IP.
-# 1.2 About Addresses
+## 1.2 About Addresses
 - Internet addresses are binary numbers. There are two types: version 4 (IPv4, 32 bits long) and version 6 (IPv6, 128 bits long).
 - IPv4 addresses are conventionally written as a group of four decimal numbers separated by periods (e.g., 10.1.2.3); this is called the dotted-quad notation. The four numbers in a dotted-quad string represent the contents of the four bytes of the Internet address.
 - IPv6 address, on the other hand, are represented as groups of hexadecimal digits, separated by colons (e.g., 2000:fdb8:0000:0000:0001:00ab:853c:39a1). Each group of digits represents two bytes of the address leading zeros and consecutive groups that contain only zeros may be omitted.
