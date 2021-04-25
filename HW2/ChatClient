@@ -1,0 +1,186 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package HW2;
+
+import java.net.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+import newpackage.Employee;
+
+public class ChatClient {
+    
+    public static List<Advertising> readData(String fileName) {
+        List<Advertising> advertising = new ArrayList<Advertising>();
+
+        try {
+            File file = new File(fileName);
+            Scanner reader = new Scanner(file);
+            
+            //headers//
+            String hdata = reader.nextLine();
+            StringTokenizer htokens = new StringTokenizer(hdata, ",");
+
+            // get data 
+            String hTV = htokens.nextToken();
+            String hRadio = htokens.nextToken();
+            String hNewspaper = htokens.nextToken();
+            String hSales = htokens.nextToken();
+            
+            // create a row and add to the list
+            advertising.add(new Advertising(hTV, hRadio, hNewspaper, hSales));
+            //headers//
+            
+            while (reader.hasNextLine()) {
+                String data = reader.nextLine();
+                StringTokenizer tokens = new StringTokenizer(data, ",");
+
+                // get data 
+                double TV = Double.parseDouble(tokens.nextToken());
+                double Radio = Double.parseDouble(tokens.nextToken());
+                double Newspaper = Double.parseDouble(tokens.nextToken());
+                double Sales = Double.parseDouble(tokens.nextToken());
+
+                // create a row and add to the list
+                advertising.add(new Advertising(TV, Radio, Newspaper, Sales));
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        return advertising;
+    }
+
+    public static void writeData(String fileName, List<Advertising> advert) {
+        try {
+            FileWriter writer = new FileWriter(fileName);
+
+            // save data
+            int i = 0;
+            for (Advertising advertising : advert) {
+                if(i==0){
+                    String hTV = advertising.gethTV();
+                    String hRadio = advertising.gethRadio();
+                    String hNewspaper = advertising.gethNewspaper();
+                    String hSales = advertising.gethSales();
+                    writer.write(hTV + "," + hRadio + "," + hNewspaper + "," + hSales + "\n");
+                    i=1;
+                }else{
+                    double TV = advertising.getTV();
+                    double Radio = advertising.getRadio();
+                    double Newspaper = advertising.getNewspaper();
+                    double Sales = advertising.getSales();
+                    writer.write(TV + "," + Radio + "," + Newspaper + "," + Sales + "\n");
+                }
+            }
+            writer.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+    
+ /*   
+//NOT USED//    
+  public static long countLineJava8(String fileName) {
+
+      Path path = Paths.get(fileName);
+
+      long lines = 0;
+      try {
+
+          // much slower, this task better with sequence access
+          //lines = Files.lines(path).parallel().count();
+
+          lines = Files.lines(path).count();
+
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+
+      return lines;
+
+  }
+//NOT USED//    
+*/
+    
+    public static void main(String args[]) {
+        try {
+                String serverName = "localhost";
+                int serverPort = 1999;
+                String dir = "D:\\University\\3rd year\\Distributed System\\code\\step1\\Client\\";
+		Socket socket = null;
+		ObjectOutputStream toServer = null;
+		ObjectInputStream fromServer = null;
+
+                System.out.println("Establishing connection. Please wait ...");
+                socket = new Socket(serverName, serverPort);
+                System.out.println("Connected: " + socket);
+
+                BufferedReader console = 
+                                new BufferedReader(new InputStreamReader(System.in));
+                DataOutputStream streamOut = 
+                                new DataOutputStream(socket.getOutputStream());
+
+                String line = "";
+                while (!line.equals(".bye")) {
+                        try {
+                                // read data from users
+                                System.out.println("List of commands: "
+                                        + "\n.bye = exit"
+                                        + "\n.cpy = Copy file to server"
+                                        + "\nEnter command> ");
+                                line = console.readLine();
+                                
+
+                                // copy file to server
+                                switch (line){
+                                    case ".cpy":
+                                        System.out.println("Enter file name: ");
+                                        String filename = console.readLine();
+
+
+                                        List<Advertising> list = ChatClient.readData(dir.concat(filename));
+                                        System.out.println(list);
+
+                                        toServer = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+
+                                        toServer.writeObject(list);
+                                        toServer.flush();
+
+
+                                        ChatClient.writeData("D:\\University\\3rd year\\Distributed System\\code\\step1\\Client\\new_advertising2.csv", list);
+                                        break;
+                                }
+                                // send to server
+                                streamOut.writeUTF(line);
+                                streamOut.flush();
+                                
+
+                                
+                        } catch (IOException ioe) {
+                                System.out.println("Sending error: " + ioe.getMessage());
+                        }
+                }
+
+                console.close();
+                streamOut.close();
+                socket.close();
+        } catch (UnknownHostException uhe) {
+                System.out.println("Host unknown: " + uhe.getMessage());
+        } catch (IOException ioe) {
+                System.out.println("Unexpected exception: " + ioe.getMessage());
+        }
+    }
+}
