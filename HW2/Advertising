@@ -1,0 +1,73 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package HW2;
+//import hmap.*;
+import java.util.Random;
+/**
+ *
+ * @author ThinkPro
+ */
+public class Advertising {
+    private double TV;
+    private double Radio;
+    private double Newspaper;
+    private double Sales;
+    private String hTV;
+    private String hRadio;
+    private String hNewspaper;
+    private String hSales;
+    
+    public Advertising(String hTV, String hRadio, String hNewspaper, String hSales) {
+        this.hTV = hTV;
+        this.hRadio = hRadio;
+        this.hNewspaper = hNewspaper;
+        this.hSales = hSales;
+    }
+    
+    public Advertising(double TV, double Radio, double Newspaper, double Sales) {
+        this.TV = TV;
+        this.Radio = Radio;
+        this.Newspaper = Newspaper;
+        this.Sales = Sales;
+    }
+    
+    @Override
+    public String toString() {
+        return TV + "_" + Radio + "_" + Newspaper + "_" + Sales;
+    }
+
+    public double getTV() {
+        return TV;
+    }
+
+    public double getRadio() {
+        return Radio;
+    }
+    
+    public double getNewspaper() {
+        return Newspaper;
+    }
+    
+    public double getSales() {
+        return Sales;
+    }
+    
+    public String gethTV() {
+        return hTV;
+    }
+
+    public String gethRadio() {
+        return hRadio;
+    }
+    
+    public String gethNewspaper() {
+        return hNewspaper;
+    }
+    
+    public String gethSales() {
+        return hSales;
+    }
+}
