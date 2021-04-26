@@ -34,7 +34,15 @@ typical TCP client goes through three steps:
   1. Construct an instance of DatagramSocket, optionally specifying the local address and port.
   2. Communicate by sending and receiving instances of DatagramPacket using the send() and receive() methods of DatagramSocket.
   3. When finished, deallocate the socket using the close() method of DatagramSocket.
+- Each datagram can be sent to or received from a different destination.
+- The UDP echo client sends a datagram containing the string to be echoed and prints whatever it receives back from the server. A UDP echo server simply sends each datagram that it receives back to the client.
+- Datagrams can be lost. To avoid this problem, use the setSoTimeout() method of DatagramSocket to specify a maximum amount of time to block on receive(), so it can try again by resending the echo request datagram.
 ### 2.3.3 UDP Server
-- 
+-  UDP communication is initiated by a datagram from the client. The typical UDP server goes through three steps:
+  1. Construct an instance of DatagramSocket, specifying the local port and, optionally, the local address.
+  2. Receive an instance of DatagramPacket using the receive() method of DatagramSocket. When receive() returns, the datagram contains the client’s address so we know where to send the reply.
+  3.  Communicate by sending and receiving DatagramPackets using the send() and receive() methods of DatagramSocket.
 ### 2.3.4 Sending and Receiving UDP Sockets
-- 
+- UDP does not provide recovery from network errors and, therefore, does not buffer data for possible retransmission. This means that by the time a call to send() returns, the message has been passed to the underlying channel for transmission and is on its way out.
+- A UDP socket’s received data is kept in a queue of messages, each with associated information identifying its source. A call to receive() will never return more than one message. However, if receive() is called with a DatagramPacket containing a buffer of size n, and the size of the first message in the receive queue exceeds n, only the first n bytes of the message are returned. The remaining bytes are quietly discarded, with no indication to the receiving program that information has been lost.
+- The getData() method of DatagramPacket always returns the entire original buffer, ignoring the internal offset and length values. Receiving a message into the DatagramPacket only modifies those locations of the buffer into which message data was placed.
