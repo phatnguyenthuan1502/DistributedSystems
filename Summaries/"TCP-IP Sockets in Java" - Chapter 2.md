@@ -14,10 +14,10 @@ typical TCP client goes through three steps:
 ### 2.2.2 TCP Server
 - The server’s job is to set up a communication endpoint and passively wait for connections from clients. The typical TCP server goes through two steps:
    1. Construct a ServerSocket instance, specifying the local port. This socket listens for incoming connections to the specified port. 
-   2. Repeatedly: 
-      a. Call the accept() method of ServerSocket to get the next incoming client connection. Upon establishment of a new client connection, an instance of Socket for the new connection is created and returned by accept(). 
-      b. Communicate with the client using the returned Socket’s InputStream and OutputStream.
-      c. When finished, close the new client socket connection using the close() method of Socket.
+   2. Repeatedly:
+      - Call the accept() method of ServerSocket to get the next incoming client connection. Upon establishment of a new client connection, an instance of Socket for the new connection is created and returned by accept(). 
+      - Communicate with the client using the returned Socket’s InputStream and OutputStream.
+      - When finished, close the new client socket connection using the close() method of Socket.
 ### 2.2.3 Input and Output Streams
 - 
 ## 2.3 UDP Sockets
