@@ -8,9 +8,9 @@
 ### 2.2.1 TCP Client
 - The client initiates communication with a server that is passively waiting to be contacted. The
 typical TCP client goes through three steps:
-1. Construct an instance of Socket.
-2. Communicate using the socket’s I/O streams.
-3. Close the connection using the close() method of Socket.
+  - Construct an instance of Socket.
+  - Communicate using the socket’s I/O streams.
+  - Close the connection using the close() method of Socket.
 ### 2.2.2 TCP Server
 - 
 ### 2.2.3 Input and Output Streams
