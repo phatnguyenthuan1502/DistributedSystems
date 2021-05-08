@@ -2,10 +2,10 @@
 ## 4.1 Overview
 - A thread represents a basic unit of CPU utilization, and threads belonging to the same process share many of the process resources, including code and data.
 - There are four primary benefits to multithreaded applications:
-1. Responsiveness: Multithreading an interactive application may allow a program to continue running even if part of it is blocked or is performing a lengthy operation, thereby increasing responsiveness to the user.
-2. Resource sharing: Processes can share resources only through techniques such as shared memory and message passing.
-3. Economy: Because threads share the resources of the process to which they belong, it is more economical to create and context-switch threads. Additionally, context switching is typically faster between threads than between processes.
-4. Scalability: The benefits of multithreading can be even greater in a multiprocessor architecture, where threads may be running in parallel on different processing cores.
+  - Responsiveness: Multithreading an interactive application may allow a program to continue running even if part of it is blocked or is performing a lengthy operation, thereby increasing responsiveness to the user.
+  - Resource sharing: Processes can share resources only through techniques such as shared memory and message passing.
+  - Economy: Because threads share the resources of the process to which they belong, it is more economical to create and context-switch threads. Additionally, context switching is typically faster between threads than between processes.
+  - Scalability: The benefits of multithreading can be even greater in a multiprocessor architecture, where threads may be running in parallel on different processing cores.
 ## 4.2 Multicore Programming
 ### 4.2.1 Programming Challenges
 
