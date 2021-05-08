@@ -40,17 +40,8 @@ GCD schedules tasks for run-time execution by placing them on a dispatch queue. 
 ### 4.5.5 Intel Thread Building Blocks
 Intel threading building blocks (TBB) is a template library that supports designing parallel applications in C++. As this is a library, it requires no special compiler or language support. Developers specify tasks that can run in par-allel, and the TBB task scheduler maps these tasks onto underlying threads. Furthermore, the task scheduler provides load balancing and is cache aware, meaning that it will give precedence to tasks that likely have their data stored in cache memory and thus will execute more quickly.
 ## 4.6 Threading Issues
-### 4.6.1 The fork() and exec() System Calls
-
-### 4.6.2 Signal Handling
-
-### 4.6.3 Thread Cancellation
-
-### 4.6.4 Thread-Local Storage
-
-### 4.6.5 Scheduler Activations
-
-## 4.7 Operating-System Examples
-### 4.7.1 Windows Threads
-
-### 4.7.2 Linux Threads
+- The fork() and exec() System Calls
+- Signal Handling
+- Thread Cancellation
+- Thread-Local Storage
+- Scheduler Activations
