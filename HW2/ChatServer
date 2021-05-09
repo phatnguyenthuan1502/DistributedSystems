@@ -93,8 +93,9 @@ public class ChatServer {
     public static void main(String args[]) {
         try {
             int port = 1999;
-            ObjectOutputStream toClient = null;
             ObjectInputStream fromClient = null;
+            ObjectOutputStream toClient = null;
+            String serverDir = "D:\\University\\3rd year\\Distributed System\\code\\(2)ds2\\(4)step1\\Server\\new_copy.csv";
 
             ServerSocket server = new ServerSocket(port);
             System.out.println("Server started: " + server);
@@ -106,23 +107,53 @@ public class ChatServer {
             // open stream
             DataInputStream streamIn = 
                             new DataInputStream(socket.getInputStream());
-
+            
+            fromClient = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+            toClient = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            
             boolean done = false;
             while (!done) {				
-                //toClient = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-                fromClient = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
                 try {
                     // read data from client
                     String line = streamIn.readUTF();
                     System.out.println(line);
+                    
+                    List<Advertising> serverList = ChatClient.readData(serverDir);
                     switch (line){
                         case ".cpy":
-                            List<Advertising> listRequest = (List) fromClient.readObject();
+                            List<Advertising> listRequest = (List<Advertising>) fromClient.readObject();
                             System.out.println(listRequest);
-                            ChatServer.writeData("D:\\University\\3rd year\\Distributed System\\code\\step1\\Server\\new_advertising.csv", listRequest);
-
+                            ChatServer.writeData(serverDir, listRequest);
+                            break;
+                        case ".sumTV":
+                            double sumTV = 0.0;
+                            for(int i = 1; i < serverList.size(); i++){
+                                sumTV = sumTV + serverList.get(i).getTV();
+                            }
+                            System.out.println(sumTV);
+                            toClient.writeObject(new Message(sumTV));
+                            toClient.flush();
+                            
+                        case ".sumRadio":
+                            double sumRadio = 0.0;
+                            for(int i = 1; i < serverList.size(); i++){
+                                sumRadio = sumRadio + serverList.get(i).getRadio();
+                            }
+                            System.out.println(sumRadio);
+                            toClient.writeObject(new Message(sumRadio));
+                            toClient.flush();
+                            
+                        case ".sumNews":
+                            double sumNews = 0.0;
+                            for(int i = 1; i < serverList.size(); i++){
+                                sumNews = sumNews + serverList.get(i).getNewspaper();
+                            }
+                            System.out.println(sumNews);
+                            toClient.writeObject(new Message(sumNews));
+                            toClient.flush();
+                            
                     }
-
+                    
                     // check if the program is over.
                     done = line.equals(".bye");
                 } catch (IOException ioe) {
