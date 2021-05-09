@@ -7,18 +7,14 @@ package HW2;
 
 import java.net.*;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import newpackage.Employee;
 
-public class ChatClient {
+public class ChatServer {
     
     public static List<Advertising> readData(String fileName) {
         List<Advertising> advertising = new ArrayList<Advertising>();
@@ -93,119 +89,86 @@ public class ChatClient {
         }
     }
     
- /*   
-//NOT USED//    
-  public static long countLineJava8(String fileName) {
 
-      Path path = Paths.get(fileName);
-
-      long lines = 0;
-      try {
-
-          // much slower, this task better with sequence access
-          //lines = Files.lines(path).parallel().count();
-
-          lines = Files.lines(path).count();
-
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-
-      return lines;
-
-  }
-//NOT USED//    
-*/
-    
     public static void main(String args[]) {
         try {
-                String serverName = "localhost";
-                int serverPort = 1999;
-                String clientDir = "D:\\University\\3rd year\\Distributed System\\code\\(2)ds2\\(4)step1\\Client\\";
-		Socket socket = null;
-		ObjectOutputStream toServer = null;
-		ObjectInputStream fromServer = null;
+            int port = 1999;
+            ObjectInputStream fromClient = null;
+            ObjectOutputStream toClient = null;
+            String serverDir = "D:\\University\\3rd year\\Distributed System\\code\\(2)ds2\\(4)step1\\Server\\new_copy.csv";
 
-                System.out.println("Establishing connection. Please wait ...");
-                socket = new Socket(serverName, serverPort);
-                System.out.println("Connected: " + socket);
-                
+            ServerSocket server = new ServerSocket(port);
+            System.out.println("Server started: " + server);
+            System.out.println("Waiting for a client ...");
 
+            Socket socket = server.accept();
+            System.out.println("Client accepted: " + socket);
 
-                BufferedReader console = 
-                                new BufferedReader(new InputStreamReader(System.in));
-                DataOutputStream streamOut = 
-                                new DataOutputStream(socket.getOutputStream());
-
-                String line = "";
-                while (!line.equals(".bye")) {
-                    toServer = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-                    fromServer = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
-
-                        try {
-                                // read data from users
-                                System.out.println("List of commands: "
-                                        + "\n.bye = exit"
-                                        + "\n.cpy = Copy file to server"
-                                        + "\n.sumTV = Total $ for TV advertising"
-                                        + "\n.sumRadio = Total $ for Radio advertising"
-                                        + "\n.sumNews = Total $ for Newspaper advertising"
-                                        + "\nEnter command> ");
-                                line = console.readLine();
-                                
-                                
-                                // commands
-                                switch (line){
-                                    case ".cpy":
-                                        System.out.println("Enter file name: ");
-                                        String filename = console.readLine();
-
-
-                                        List<Advertising> list = ChatClient.readData(clientDir.concat(filename));
-                                        System.out.println(list);
-
-
-                                        toServer.writeObject(list);
-                                        toServer.flush();
-                                        
-                                        System.out.println(list.get(2).getTV());
-
-                                        //NOT USED//
-                                        //ChatClient.writeData("D:\\University\\3rd year\\Distributed System\\code\\step1\\Client\\new_advertising.csv", list);
-                                        //NOT USED//
-                                        break;
-                                    case ".sumTV":
-                                        Message sumTV = (Message) fromServer.readObject();
-                                        System.out.println(sumTV.getNum());
-                                        
-                                    case ".sumRadio":
-                                        Message sumRadio = (Message) fromServer.readObject();
-                                        System.out.println(sumRadio.getNum());
-                                        
-                                    case ".sumNews":
-                                        Message sumNews = (Message) fromServer.readObject();
-                                        System.out.println(sumNews.getNum());
-                                }
-                                // send to server
-                                streamOut.writeUTF(line);
-                                streamOut.flush();
-                                
-                        } catch (IOException ioe) {
-                                System.out.println("Sending error: " + ioe.getMessage());
-                        } catch (ClassNotFoundException ex) {
-                                Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch(NullPointerException e){
-                                System.out.print("NullPointerException Caught\n");
-                        }
+            // open stream
+            DataInputStream streamIn = 
+                            new DataInputStream(socket.getInputStream());
+            
+            fromClient = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+            toClient = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            
+            boolean done = false;
+            while (!done) {				
+                try {
+                    // read data from client
+                    String line = streamIn.readUTF();
+                    System.out.println(line);
+                    
+                    List<Advertising> serverList = ChatClient.readData(serverDir);
+                    switch (line){
+                        case ".cpy":
+                            List<Advertising> listRequest = (List<Advertising>) fromClient.readObject();
+                            System.out.println(listRequest);
+                            ChatServer.writeData(serverDir, listRequest);
+                            break;
+                        case ".sumTV":
+                            double sumTV = 0.0;
+                            for(int i = 1; i < serverList.size(); i++){
+                                sumTV = sumTV + serverList.get(i).getTV();
+                            }
+                            System.out.println(sumTV);
+                            toClient.writeObject(new Message(sumTV));
+                            toClient.flush();
+                            
+                        case ".sumRadio":
+                            double sumRadio = 0.0;
+                            for(int i = 1; i < serverList.size(); i++){
+                                sumRadio = sumRadio + serverList.get(i).getRadio();
+                            }
+                            System.out.println(sumRadio);
+                            toClient.writeObject(new Message(sumRadio));
+                            toClient.flush();
+                            
+                        case ".sumNews":
+                            double sumNews = 0.0;
+                            for(int i = 1; i < serverList.size(); i++){
+                                sumNews = sumNews + serverList.get(i).getNewspaper();
+                            }
+                            System.out.println(sumNews);
+                            toClient.writeObject(new Message(sumNews));
+                            toClient.flush();
+                            
+                    }
+                    
+                    // check if the program is over.
+                    done = line.equals(".bye");
+                } catch (IOException ioe) {
+                    done = true;
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(ChatServer.class.getName()).log(Level.SEVERE, null, ex);
+                } catch(NullPointerException e){
+                    System.out.print("NullPointerException Caught");
                 }
-
-                console.close();
-                streamOut.close();
-                socket.close();
-        } catch (UnknownHostException uhe) {
-                System.out.println("Host unknown: " + uhe.getMessage());
+            }
+            streamIn.close();
+            socket.close();
+            server.close();
         } catch (IOException ioe) {
-                System.out.println("Unexpected exception: " + ioe.getMessage());
+                System.out.println(ioe);
         }
     }
 }
