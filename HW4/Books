@@ -1,0 +1,12 @@
+public class Books extends Media{
+    String author;
+    
+    public Books(String name, String author){
+        super(name);
+        this.author = author;
+    }
+    
+    public String getAuthor(){
+        return author;
+    }
+}
