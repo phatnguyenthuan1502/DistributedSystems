@@ -1,0 +1,9 @@
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Services extends Remote{
+    void addBook(String b_name, String author) throws RemoteException;
+    void addNewspaper(String n_name, String type) throws RemoteException;
+    int countBooks() throws RemoteException;
+    int countNewspaper() throws RemoteException;
+}
