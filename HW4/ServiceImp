@@ -1,0 +1,124 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package javaapplication6;
+
+import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+/**
+ *
+ * @author ThinkPro
+ */
+public class ServiceImp implements Services{
+        
+    public void addBook(String b_name, String author) throws RemoteException{
+        try {
+            //Database connection//
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/media";
+            String user = "root";
+            String password = "torgue123";
+
+            Connection con;
+            con = DriverManager.getConnection(url, user, password);
+
+            String SQL = "INSERT INTO books VALUES(?, ?)";
+            PreparedStatement pstm;
+            pstm = con.prepareStatement(SQL);
+            pstm.setString(1,b_name);
+            pstm.setString(2,author);
+            int rows = pstm.executeUpdate();
+            System.out.println("Rows affected: " + rows);
+            pstm.close();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void addNewspaper(String n_name, String type) throws RemoteException{
+        try {
+            //Database connection//
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/media";
+            String user = "root";
+            String password = "torgue123";
+
+            Connection con;
+            con = DriverManager.getConnection(url, user, password);
+
+            String SQL = "INSERT INTO newspapers VALUES(?, ?)";
+            PreparedStatement pstm;
+            pstm = con.prepareStatement(SQL);
+            pstm.setString(1,n_name);
+            pstm.setString(2,type);
+            int rows = pstm.executeUpdate();
+            System.out.println("Rows affected: " + rows);
+            pstm.close();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    public int countBooks() throws RemoteException{
+        int count = 0;
+        try {
+            //Database connection//
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/media";
+            String user = "root";
+            String password = "torgue123";
+
+            Connection con;
+            con = DriverManager.getConnection(url, user, password);
+
+            String SQL = "SELECT COUNT(*)   FROM books";
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(SQL);
+            
+            rs.next();
+            count = rs.getInt(1);
+            
+            stm.close();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return count;
+    }
+    
+    public int countNewspapers() throws RemoteException{
+        int count = 0;
+        try {
+            //Database connection//
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/media";
+            String user = "root";
+            String password = "torgue123";
+
+            Connection con;
+            con = DriverManager.getConnection(url, user, password);
+
+            String SQL = "SELECT COUNT(*)   FROM newspapers";
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(SQL);
+            
+            rs.next();
+            count = rs.getInt(1);
+            
+            stm.close();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return count;
+    }
+}
