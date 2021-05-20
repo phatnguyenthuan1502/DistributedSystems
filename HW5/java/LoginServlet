@@ -1,28 +1,54 @@
 package pk1;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/login"})
+
+import javax.servlet.annotation.WebServlet;
+
+@WebServlet(urlPatterns = "/authentication")
 public class LoginServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private boolean makeQueryToDB(String username, String password) {
+        String databaseUrl = "jdbc:mysql://localhost:3306/practicetest?user=" + "guest" + "&password=" + "password";
+        Connection conn = null;
 
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(databaseUrl);
+            System.out.println("Connected to database");
+            PreparedStatement st = conn.prepareStatement("SELECT * FROM login WHERE username= ? AND password = ?");
+            st.setString(1, username);
+            st.setString(2, password);
+            ResultSet res = st.executeQuery();
+            if (res.next()) 
+                return true;
+            else 
+                return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println(request.getServletPath());
-		if (request.getParameter("username").equals("phat") && 
-				request.getParameter("password").equals("1502")){
-			response.setContentType("text/html");
-
-		    PrintWriter out = response.getWriter();
-		    out.println("<h1>" + "Login Successfully" + "</h1>");
-		}
-	}
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("DO post run");
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        
+        if (makeQueryToDB(username, password)) {
+            resp.addCookie(new Cookie("isLogin", "true"));
+            resp.sendRedirect(req.getContextPath() + "/calculator.html");
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/index.html");
+        }
+    }
 }
