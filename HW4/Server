@@ -1,3 +1,10 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package javaapplication6;
+
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
@@ -6,118 +13,19 @@ import java.rmi.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-public class Server implements Services{
-    public Server() {}
-    
-    public void addBook(String b_name, String author) throws RemoteException{
-        try {
-            //Database connection//
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/media";
-            String user = "root";
-            String password = "torgue123";
-
-            Connection con;
-            con = DriverManager.getConnection(url, user, password);
-
-            String SQL = "INSERT INTO books VALUES(?, ?)";
-            PreparedStatement pstm;
-            pstm = con.prepareStatement(SQL);
-            pstm.setString(1,b_name);
-            pstm.setString(2,author);
-            pstm.close();
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    public void addNewspaper(String n_name, String type) throws RemoteException{
-        try {
-            //Database connection//
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/media";
-            String user = "root";
-            String password = "torgue123";
-
-            Connection con;
-            con = DriverManager.getConnection(url, user, password);
-
-            String SQL = "INSERT INTO newspapers VALUES(?, ?)";
-            PreparedStatement pstm;
-            pstm = con.prepareStatement(SQL);
-            pstm.setString(1,n_name);
-            pstm.setString(2,type);
-            pstm.close();
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-    
-    public int countBooks() throws RemoteException{
-        int count = 0;
-        try {
-            //Database connection//
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/media";
-            String user = "root";
-            String password = "torgue123";
-
-            Connection con;
-            con = DriverManager.getConnection(url, user, password);
-
-            String SQL = "SELECT COUNT(*)   FROM books";
-            Statement stm = con.createStatement();
-            ResultSet rs = stm.executeQuery(SQL);
-            
-            rs.next();
-            count = rs.getInt(1);
-            
-            stm.close();
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return count;
-    }
-    
-    public int countNewspaper() throws RemoteException{
-        int count = 0;
-        try {
-            //Database connection//
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/media";
-            String user = "root";
-            String password = "torgue123";
-
-            Connection con;
-            con = DriverManager.getConnection(url, user, password);
-
-            String SQL = "SELECT COUNT(*)   FROM newspapers";
-            Statement stm = con.createStatement();
-            ResultSet rs = stm.executeQuery(SQL);
-            
-            rs.next();
-            count = rs.getInt(1);
-            
-            stm.close();
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return count;
-    }
-    
+/**
+ *
+ * @author ThinkPro
+ */
+public class Server{
     public static void main(String args[]) {
         try {
-            Server obj = new Server();
+            ServiceImp obj = new ServiceImp();
             Services stub = (Services) 
-                                    UnicastRemoteObject.exportObject(obj, 0);
+                                    UnicastRemoteObject.exportObject(obj, 1999);
 
             // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.createRegistry(1999);
             registry.bind("Services", stub);
 
             System.err.println("Server ready");
