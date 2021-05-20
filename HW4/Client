@@ -1,10 +1,20 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package javaapplication6;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
+/**
+ *
+ * @author ThinkPro
+ */
 public class Client {
     private Client() {}
 
@@ -14,42 +24,50 @@ public class Client {
             // get data from users
             BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 			
-            Registry registry = LocateRegistry.getRegistry(host);
+            Registry registry = LocateRegistry.getRegistry(host,1999);
             Services stub = (Services) registry.lookup("Services");
             
-            System.out.println("Choose action: ");
-
-            String line = console.readLine();
-            switch(line){
-                case "addBook":
-                    System.out.println("Enter book name: ");
-                    String bookName = console.readLine();
-                    System.out.println("Enter book author: ");
-                    String bookAuthor = console.readLine();
-                    
-                    stub.addBook(bookName, bookAuthor);
-                    break;
-                    
-                case "addNewspaper":
-                    System.out.println("Enter Newspaper name: ");
-                    String newspaperName = console.readLine();
-                    System.out.println("Enter Newspaper type: ");
-                    String newspaperType = console.readLine();
-                    
-                    stub.addNewspaper(newspaperName, newspaperType);
-                    break;
-                    
-                case "countBooks":
-                    int bookCount = stub.countBooks();
-                    System.out.println("Number of books: " + bookCount);
-                    break;     
-                    
-                case "countNewpapers":
-                    int newpaperCount = stub.countBooks();
-                    System.out.println("Number of books: " + newpaperCount);
-                    break;
-            }
             
+            int i = 0;
+
+            while(i==0){
+                System.out.println("Choose action "
+                        + "(addBook; addNewspaper; countBooks; countNews; exit): ");
+                String line = console.readLine();
+                switch(line){
+                    case "addBook":
+                        System.out.println("Enter book name: ");
+                        String bookName = console.readLine();
+                        System.out.println("Enter book author: ");
+                        String bookAuthor = console.readLine();
+
+                        stub.addBook(bookName, bookAuthor);
+                        break;
+
+                    case "addNewspaper":
+                        System.out.println("Enter Newspaper name: ");
+                        String newspaperName = console.readLine();
+                        System.out.println("Enter Newspaper type: ");
+                        String newspaperType = console.readLine();
+
+                        stub.addNewspaper(newspaperName, newspaperType);
+                        break;
+                        
+                    case "countBooks":
+                        int bookCount = stub.countBooks();
+                        System.out.println("Number of books: " + bookCount);
+                        break;     
+
+                    case "countNews":
+                        int newspaperCount = stub.countNewspapers();
+                        System.out.println("Number of Newspapers: " + newspaperCount);
+                        break;
+                        
+                    case "exit":
+                        i = 1;
+                        break;
+                }
+            }
         } catch (IOException ioe) {
 			System.out.println("Unexpected exception: " + ioe.getMessage());
 		}		
