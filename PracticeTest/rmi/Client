@@ -1,1 +1,63 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package javaapplication7;
 
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Scanner;
+
+public class Client {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost", 1999);
+            Services stub = (Services) registry.lookup("Services"); // same name when server register to RMI server
+
+            System.out.print("Input username: ");
+            String username = scanner.nextLine();
+            System.out.print("Input password: ");
+            String password = scanner.nextLine();
+            if (!stub.login(username, password)) {
+                System.out.println("you dont have account");
+                
+                System.out.println("=========Createing new account=========");
+                System.out.print("Input username: ");
+                String user = scanner.nextLine();
+                System.out.print("Input password: ");
+                String pass = scanner.nextLine();
+                if (!stub.createAccount(user, pass)) {
+                    System.out.println("Account exist. Try again");
+                }
+                System.out.println("Account created. Please login again");
+                scanner.close();
+                return;
+            }
+
+            String clientSymbol = stub.getToken();
+            System.out.println(clientSymbol);
+            
+            while (stub.win() == null) {
+                System.out.print("Player " + clientSymbol + " choose your move[1 - 3]: ");
+                int x = scanner.nextInt();
+                int y = scanner.nextInt();
+                if (!stub.move(x, y, clientSymbol)) {
+                    System.out.println("Already move Or you must wait for your openent");
+                    continue;
+                }
+
+                System.out.println(stub.display());
+            }
+            if (stub.win().equals("draw"))
+                System.out.println("Game over. Draw");
+            else
+                System.out.println("Game Over. Player " + stub.win() + " win!" );
+
+            scanner.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
