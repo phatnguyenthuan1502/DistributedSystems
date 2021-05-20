@@ -1,0 +1,22 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package javaapplication7;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Services extends Remote {
+    public boolean move(int x, int y, String player) throws RemoteException;
+
+    public String win() throws RemoteException;
+    
+    public String display() throws RemoteException;
+
+    public String getToken() throws RemoteException;
+
+    public boolean login(String username, String password) throws RemoteException;
+    public boolean createAccount(String username, String password) throws RemoteException;
+}
