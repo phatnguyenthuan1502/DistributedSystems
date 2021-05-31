@@ -16,7 +16,7 @@
 ### Character References and CDATA Sections
 - Certain characters cannot appear literally in the content that appears between a start tag and an end tag or within an attribute value. For example, you cannot place a literal < character between a start tag and an end tag because doing so would confuse an XML parser into thinking that it had encountered another tag. 
 - One solution to this problem is to replace the literal character with a character reference, which is a code that represents the character. Character references are classified as numeric character references or character entity references:
-   - asde
+   - asdes
 ### Namespaces
 ### Comments and Processing Instructions 
 ## Well-Formed Documents
