@@ -16,9 +16,15 @@
 ### Character References and CDATA Sections
 - Certain characters cannot appear literally in the content that appears between a start tag and an end tag or within an attribute value. For example, you cannot place a literal < character between a start tag and an end tag because doing so would confuse an XML parser into thinking that it had encountered another tag. 
 - One solution to this problem is to replace the literal character with a character reference, which is a code that represents the character. Character references are classified as numeric character references or character entity references:
-   - asdes
+   - A numeric character reference refers to a character via its Unicode code point and adheres to the format &#nnnn; or &#xhhhh;, where nnnn provides a decimal representation of the code point and hhhh provides a hexadecimal representation.
+   -  A character entity reference refers to a character via the name of an entity that specifies the desired character as its replacement text. Character entity references are predefined by XML and have the format &name;, in which name is the entity’s name. XML predefines five character entity references: &lt; ( <), &gt; ( >), &amp; ( &), &apos; ( '), and &quot; ( ").
+-  A CDATA section is a section of literal HTML or XML markup and content surrounded by the <![CDATA[ prefix and the ]]> suffix. You don’t need to specify predefined character entity references within a CDATA section.
 ### Namespaces
+- Namespacesare used to prevent name conflicts when elements and other XML language features appear.
+- A namespace is a Uniform Resource Identifier (URI)-based container that helps differentiate XML vocabularies by providing a unique context for its contained identifiers. The namespace URI is associated with a namespace prefix by specifying, typically in an XML document’s root element, either the xmlns attribute by itself or the xmlns:prefix attribute, and assigning the URI to this attribute.
+- A tag’s attributes don’t need to be prefixed when those attributes belong to the element. However, a prefix is required for attributes belonging to other namespaces.
 ### Comments and Processing Instructions 
+- XML documents can contain comments, which are character sequences beginning with <!-- and ending with -->.
 ## Well-Formed Documents
 ## Valid Documents
 ### Document Type Definition
