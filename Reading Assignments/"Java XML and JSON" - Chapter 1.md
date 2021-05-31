@@ -24,7 +24,7 @@
 - A namespace is a Uniform Resource Identifier (URI)-based container that helps differentiate XML vocabularies by providing a unique context for its contained identifiers. The namespace URI is associated with a namespace prefix by specifying, typically in an XML document’s root element, either the xmlns attribute by itself or the xmlns:prefix attribute, and assigning the URI to this attribute.
 - A tag’s attributes don’t need to be prefixed when those attributes belong to the element. However, a prefix is required for attributes belonging to other namespaces.
 ### Comments and Processing Instructions 
-- XML documents can contain comments, which are character sequences beginning with <!-- and ending with -->.
+- XML documents can contain comments, which are character sequences beginning with <?<!-- and ending with -->?>.
 ## Well-Formed Documents
 ## Valid Documents
 ### Document Type Definition
