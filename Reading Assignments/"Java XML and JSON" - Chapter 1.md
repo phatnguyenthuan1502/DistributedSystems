@@ -24,8 +24,24 @@
 - A namespace is a Uniform Resource Identifier (URI)-based container that helps differentiate XML vocabularies by providing a unique context for its contained identifiers. The namespace URI is associated with a namespace prefix by specifying, typically in an XML document’s root element, either the xmlns attribute by itself or the xmlns:prefix attribute, and assigning the URI to this attribute.
 - A tag’s attributes don’t need to be prefixed when those attributes belong to the element. However, a prefix is required for attributes belonging to other namespaces.
 ### Comments and Processing Instructions 
-- XML documents can contain comments, which are character sequences beginning with <?<!-- and ending with -->?>.
+- XML documents can contain comments, which are character sequences beginning with <!-- and ending with -->.
+- XML also permits processing instructions to be present. A processing instruction is an instruction that’s made available to the application parsing the document.
 ## Well-Formed Documents
+- XML is a much stricter language than HTML. To make XML documents easier to parse, XML mandates that XML documents follow certain rules:
+   - All elements must either have start and end tags or consist of empty-element tags.
+   - Tags must be nested correctly.
+   - All attribute values must be quoted.
+   - Empty elements must be properly formatted.
+   - Be careful with case.
+- XML parsersthat are aware of namespaces enforce two additional rules:
+   - Each element and attribute name must not include more than one colon character.
+   - No entity names, processing instruction targets, or notation names can contain colons.
+- An XML document that conforms to these rules is well formed.
 ## Valid Documents
+- A valid document adheres to constraints.
+- Some XML parsers perform validation, whereas other parsers don’t. A parser that performs validation compares an XML document to a grammar document. Any deviation from the grammar documentis reported as an error to the application—the XML document isn’t valid. Validity errors aren’t necessarily fatal and the parser can continue to parse the XML document.
+- Two commonly used grammar languages are Document Type Definition and XML Schema.
 ### Document Type Definition
+- DTD grammar documents are written in accordance to a strict syntax that states what elements may be present and in what parts of a document, and also what is contained within elements and what attributes may be specified.
 ### XML Schema
+- XML Schema is a grammar language for declaring the structure, content, and semantics (meaning) of an XML document.
