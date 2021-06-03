@@ -1,0 +1,85 @@
+package practicesocket;
+
+import java.io.DataOutputStream;
+import java.io.StringWriter;
+import java.net.Socket;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+public class Client {
+    public static String convertObject2XMLString(Customer c) {
+        String xmlString = null;
+
+        try {
+            DocumentBuilderFactory dBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dBuilderFactory.newDocumentBuilder();
+            Document doc = dBuilder.newDocument();
+
+            // create root element
+            Element root = doc.createElement("customers");
+
+            // create customer
+            Element customer = doc.createElement("customer");
+            
+            // id
+            Element id = doc.createElement("id");
+            id.appendChild(doc.createTextNode(String.valueOf(c.getID())));
+            customer.appendChild(id);
+
+            // name
+            Element name = doc.createElement("name");
+            name.appendChild(doc.createTextNode(c.getName()));
+            customer.appendChild(name);
+
+            // age
+            Element age = doc.createElement("age");
+            age.appendChild(doc.createTextNode(String.valueOf(c.getAge())));
+            customer.appendChild(age);
+
+            // append to root
+            root.appendChild(customer);
+            // append to doc
+            doc.appendChild(root);
+
+            // convert doc to xml stirng
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            StringWriter writer = new StringWriter();
+			transformer.transform(new DOMSource(doc), new StreamResult(writer));
+			xmlString = writer.getBuffer().toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return xmlString;
+    }
+
+    public static void main(String[] args) {
+        String host = "localhost";
+        int port = 9999;
+         
+        try {
+            Socket server = new Socket(host, port);
+
+            // get stream
+            DataOutputStream out = new DataOutputStream(server.getOutputStream());
+
+            // data process
+            Customer customer1 = new Customer(1234, "Peter", 21);
+
+            out.writeUTF(convertObject2XMLString(customer1));
+            // close
+            server.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
