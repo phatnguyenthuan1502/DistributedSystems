@@ -49,7 +49,7 @@ public class Client {
             // append to doc
             doc.appendChild(root);
 
-            // convert doc to xml stirng
+            // convert doc to xml string
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             StringWriter writer = new StringWriter();
