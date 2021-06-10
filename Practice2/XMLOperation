@@ -1,0 +1,183 @@
+package synchronization;
+
+import java.io.StringReader;
+import java.io.StringWriter;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class XMLOperation {
+    public static String convertObject2XMLString(Student s) {
+        String xmlString = null;
+
+        try {
+            DocumentBuilderFactory dBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dBuilderFactory.newDocumentBuilder();
+            Document doc = dBuilder.newDocument();
+
+            // create root element
+            Element root = doc.createElement("students");
+
+            // create student
+            Element student = doc.createElement("student");
+            
+            // id
+            Element id = doc.createElement("id");
+            id.appendChild(doc.createTextNode(String.valueOf(s.getId())));
+            student.appendChild(id);
+
+            // name
+            Element name = doc.createElement("name");
+            name.appendChild(doc.createTextNode(s.getName()));
+            student.appendChild(name);
+
+            // grade
+            Element grade = doc.createElement("grade");
+            grade.appendChild(doc.createTextNode(String.valueOf(s.getGrade())));
+            student.appendChild(grade);
+
+            // append to root
+            root.appendChild(student);
+            // append to doc
+            doc.appendChild(root);
+
+            // convert doc to xml string
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            StringWriter writer = new StringWriter();
+			transformer.transform(new DOMSource(doc), new StreamResult(writer));
+			xmlString = writer.getBuffer().toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return xmlString;
+    }
+
+
+    public static Student xml2Object(String xml) throws Exception {
+    	Student s = null;
+        System.out.println(xml);
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dbBuilder.parse(new InputSource(new StringReader(xml)));
+
+             // get root element
+            Element rootElement = (Element) doc.getDocumentElement();
+            NodeList students = rootElement.getChildNodes();
+
+            // loop through children
+            for (int i = 0; i < students.getLength(); i++) {
+                Element student = (Element) students.item(i);
+
+                // create customer
+                s = new Student(
+                    Integer.parseInt(student.getElementsByTagName("id").item(0).getTextContent()),
+                    student.getElementsByTagName("name").item(0).getTextContent(),
+                    Double.parseDouble(student.getElementsByTagName("grade").item(0).getTextContent())
+
+                );
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+	    return s;
+    }
+
+    public static String convertList2XMLString (List<Student> sl) {
+        String xmlString = null;
+
+        try {
+            DocumentBuilderFactory dBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dBuilderFactory.newDocumentBuilder();
+            Document doc = dBuilder.newDocument();
+
+            // create root element
+            Element root = doc.createElement("students");
+            
+        	Student s;
+            for(int i = 0; i < sl.size(); i++) {
+                s = sl.get(i);
+            	
+                // create student
+                Element student = doc.createElement("student");
+
+                // id
+                Element id = doc.createElement("id");
+                id.appendChild(doc.createTextNode(String.valueOf(s.getId())));
+                student.appendChild(id);
+
+                // name
+                Element name = doc.createElement("name");
+                name.appendChild(doc.createTextNode(s.getName()));
+                student.appendChild(name);
+
+                // grade
+                Element grade = doc.createElement("grade");
+                grade.appendChild(doc.createTextNode(String.valueOf(s.getGrade())));
+                student.appendChild(grade);
+
+                // append to root
+                root.appendChild(student);
+
+            }
+            // append to doc
+            doc.appendChild(root);
+            
+            // convert doc to xml string
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            StringWriter writer = new StringWriter();
+			transformer.transform(new DOMSource(doc), new StreamResult(writer));
+			xmlString = writer.getBuffer().toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return xmlString;
+    }
+    
+    public static List<Student> xml2List(String xml) throws Exception {
+    	List<Student> sl = new ArrayList();
+    	Student s = null;
+        System.out.println(xml);
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dbBuilder.parse(new InputSource(new StringReader(xml)));
+
+             // get root element
+            Element rootElement = (Element) doc.getDocumentElement();
+            NodeList students = rootElement.getChildNodes();
+
+            // loop through children
+            for (int i = 0; i < students.getLength(); i++) {
+                Element student = (Element) students.item(i);
+
+                // create student
+                s = new Student(
+                    Integer.parseInt(student.getElementsByTagName("id").item(0).getTextContent()),
+                    student.getElementsByTagName("name").item(0).getTextContent(),
+                    Double.parseDouble(student.getElementsByTagName("grade").item(0).getTextContent())
+                );
+                sl.add(i, s);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+	    return sl;
+    }
+}
