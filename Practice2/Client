@@ -1,0 +1,52 @@
+package synchronization;
+
+import java.io.DataOutputStream;
+import java.io.DataInputStream;
+import java.io.StringWriter;
+import java.net.Socket;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Client {
+    public static void main(String[] args) {
+        String host = "localhost";
+        int port = 9999;
+        
+        XMLOperation XO;
+        GradeManagement gm;
+         
+        try {
+            Socket server = new Socket(host, port);
+
+            // get stream
+            DataInputStream fromServer = new DataInputStream(server.getInputStream());
+            DataOutputStream toServer = new DataOutputStream(server.getOutputStream());
+            // data process
+            List<Student> sl1 = GradeManagement.getStudents();
+            String xml1 = XMLOperation.convertList2XMLString(sl1);
+            toServer.writeUTF(xml1);
+            
+            String xml2 = fromServer.readUTF();
+            List<Student> sl2 = XMLOperation.xml2List(xml2);
+            
+            GradeManagement.deleteDuplicate(sl1, sl2);
+            
+            GradeManagement.saveStudentList(sl2);
+            // close
+            server.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
