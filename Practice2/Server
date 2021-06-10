@@ -1,0 +1,65 @@
+package synchronization;
+
+import java.io.DataOutputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Server {
+    public static void main(String[] args) {
+        int port = 9999;
+        ServerSocket server = null;
+        
+        XMLOperation XO;
+        
+        try {
+            server = new ServerSocket(port);
+            System.out.println("Server running on port: " + port);
+
+            while (true) {
+                Socket client = server.accept();
+
+                // get stream
+                DataInputStream fromClient = new DataInputStream(client.getInputStream());
+                DataOutputStream toClient = new DataOutputStream(client.getOutputStream());
+                
+                // process data
+                String xml1 = fromClient.readUTF();
+                List<Student> sl1 = XMLOperation.xml2List(xml1);
+                
+                List<Student> sl2 = GradeManagement2.getStudents();
+                String xml2 = XMLOperation.convertList2XMLString(sl2);
+                toClient.writeUTF(xml2);
+                
+                GradeManagement.deleteDuplicate(sl2, sl1);
+                
+                GradeManagement2.saveStudentList(sl1);
+                
+                
+                // close client
+                client.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                server.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }    
+}
